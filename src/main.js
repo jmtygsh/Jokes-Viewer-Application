@@ -1,48 +1,26 @@
 import './style.css'
-import fetchData from './data.js'
+import { initializeJokesApp } from './jokesApp.js'
 
-document.querySelector('#app').innerHTML = `
+const app = document.querySelector('#app')
+
+app.innerHTML = `
   <header class="header">
-    <h1>Quote Gallery</h1>
-    <p>Discover inspiring thoughts from great minds</p>
+    <h1>😄 Jokes Viewer</h1>
+    <p>Get ready to laugh with hilarious jokes!</p>
+    <div class="controls">
+      <button id="new-joke-btn" class="btn btn-primary">🎲 New Joke</button>
+      <button id="copy-btn" class="btn btn-secondary">📋 Copy Joke</button>
+    </div>
   </header>
-  <main id="quotes-container" class="quotes-grid">
-    <div class="loading">Loading quotes...</div>
+  <main id="jokes-container" class="jokes-display">
+    <div class="loading">Loading jokes...</div>
   </main>
 `
 
-async function renderQuotes() {
-  const container = document.querySelector('#quotes-container')
-  container.innerHTML = '<div class="loading">Loading quotes...</div>'
-  try {
-    const response = await fetchData()
-    const quotes = response.data.data
-
-    if (!quotes || quotes.length === 0) {
-      container.innerHTML = '<div class="error">No quotes found.</div>'
-      return
-    }
-
-    container.innerHTML = quotes.map(quote => `
-      <div class="quote-card">
-        <div class="quote-content">
-          <span class="quote-icon">"</span>
-          <p class="quote-text">${quote.content}</p>
-        </div>
-        <div class="quote-author">
-          <span class="author-name">— ${quote.author}</span>
-          ${quote.tags && quote.tags.length > 0 ? `
-            <div class="quote-tags">
-              ${quote.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
-            </div>
-          ` : ''}
-        </div>
-      </div>
-    `).join('')
-  } catch (error) {
-    console.error('Error fetching quotes:', error)
-    container.innerHTML = '<div class="error">Failed to load quotes. Please try again later.</div>'
-  }
+const elements = {
+  container: document.querySelector('#jokes-container'),
+  newJokeBtn: document.getElementById('new-joke-btn'),
+  copyBtn: document.getElementById('copy-btn')
 }
 
-renderQuotes()
+initializeJokesApp(elements)
